@@ -30,15 +30,18 @@ This is a **single-page, client-side only** React app with no routing, no backen
 `index.html` → `src/main.jsx` (mounts at `#root`) → `src/App.jsx`
 
 ### Code structure
-All logic lives in a single monolithic component: **`src/App.jsx`**. There is no component decomposition, no context, and no external state library. State is managed entirely via `useState`:
 
-- `transactions[]` — the core data model; each entry has `{ id, description, amount, type, category, date }`
-- `description`, `amount`, `type`, `category` — controlled form inputs
-- `filterType`, `filterCategory` — filter state for the transaction table
+The app is split into four components. State management uses only `useState` — no context, no external state library.
 
-Derived values (totalIncome, totalExpenses, balance) are computed inline on each render from the `transactions` array.
+| File | Responsibility |
+|------|---------------|
+| `src/App.jsx` | Holds `transactions[]` state; passes it down and wires components together |
+| `src/Summary.jsx` | Receives `transactions`, computes `totalIncome`, `totalExpenses`, `balance`, renders summary cards |
+| `src/TransactionForm.jsx` | Owns its own form state (`description`, `amount`, `type`, `category`); calls `onAdd(transaction)` prop on submit |
+| `src/TransactionList.jsx` | Owns filter state (`filterType`, `filterCategory`); receives `transactions` and renders the filtered table |
 
-### Known bugs (intentional — this is a teaching repo)
-- `amount` is stored as a **string**, so financial calculations produce string concatenation instead of numeric addition
+The core data model: `{ id, description, amount: number, type: "income"|"expense", category, date: "YYYY-MM-DD" }`
+
+### Known issues
 - A `.delete-btn` CSS class is defined in `App.css` but no delete feature exists in the UI
 - No input validation beyond empty-field checks
